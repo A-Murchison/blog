@@ -27,11 +27,12 @@ type PostView struct {
 
 // PageData is passed to every template execution.
 type PageData struct {
-	Site  *config.Site
-	Post  *PostView   // populated for post pages
-	Posts []*PostView // populated for the index and tag pages
-	Tag   string      // populated for tag pages
-	Year  int
+	Site        *config.Site
+	Post        *PostView   // populated for post pages
+	Posts       []*PostView // populated for the index and tag pages
+	Tag         string      // populated for tag pages
+	ContentType string      // populated for content-type listing pages
+	Year        int
 }
 
 // Build reads posts from rootDir/posts/, renders HTML, and writes to outputDir.
@@ -50,6 +51,8 @@ func Build(rootDir, outputDir, baseURLOverride string) error {
 	postTmpl := filepath.Join(tmplDir, "post.html")
 	indexTmpl := filepath.Join(tmplDir, "index.html")
 	tagTmpl := filepath.Join(tmplDir, "tag.html")
+	listTmpl := filepath.Join(tmplDir, "list.html")
+	pageTmpl := filepath.Join(tmplDir, "page.html")
 
 	// Clean and recreate output directory.
 	if err := os.RemoveAll(outputDir); err != nil {
@@ -62,7 +65,7 @@ func Build(rootDir, outputDir, baseURLOverride string) error {
 	year := time.Now().Year()
 
 	// Reserved output directory names that content types must not collide with.
-	reservedNames := map[string]bool{"tags": true, "static": true}
+	reservedNames := map[string]bool{"tags": true, "static": true, "pages": true}
 
 	// Validate all content types before doing any filesystem work.
 	for _, contentType := range site.ContentTypes {
@@ -122,10 +125,33 @@ func Build(rootDir, outputDir, baseURLOverride string) error {
 			}
 			fmt.Printf("  Built: %s/%s/\n", contentType, item.Slug)
 		}
+
+		// Render content-type listing page ({type}/index.html).
+		{
+			listT, err := template.ParseFiles(baseTmpl, listTmpl)
+			if err != nil {
+				return fmt.Errorf("parsing list template for %s: %w", contentType, err)
+			}
+			outPath := filepath.Join(typeOutDir, "index.html")
+			f, err := os.Create(outPath)
+			if err != nil {
+				return fmt.Errorf("creating %s/index.html: %w", contentType, err)
+			}
+			err = listT.ExecuteTemplate(f, "base", PageData{Site: site, Posts: items, ContentType: contentType, Year: year})
+			f.Close()
+			if err != nil {
+				return fmt.Errorf("rendering %s index: %w", contentType, err)
+			}
+			fmt.Printf("  Built: %s/index.html\n", contentType)
+		}
 	}
 
-	// Homepage shows items from the "posts" type (matches templates/index.html).
+	// Homepage shows the 5 most recent posts.
 	homepageItems := contentItems["posts"]
+	const maxHomepagePosts = 5
+	if len(homepageItems) > maxHomepagePosts {
+		homepageItems = homepageItems[:maxHomepagePosts]
+	}
 
 	// Render index page.
 	{
@@ -203,8 +229,40 @@ func Build(rootDir, outputDir, baseURLOverride string) error {
 		fmt.Println("  Copied: static/")
 	}
 
+	// Load and render pages/ (static pages such as About).
+	var pageItems []*PostView
+	pagesDir := filepath.Join(rootDir, "pages")
+	if _, statErr := os.Stat(pagesDir); statErr == nil {
+		pages, err := loadContent(pagesDir, "page")
+		if err != nil {
+			return fmt.Errorf("loading pages: %w", err)
+		}
+		pageItems = pages
+		pageT, err := template.ParseFiles(baseTmpl, pageTmpl)
+		if err != nil {
+			return fmt.Errorf("parsing page template: %w", err)
+		}
+		for _, pg := range pages {
+			pgDir := filepath.Join(outputDir, pg.Slug)
+			if err := os.MkdirAll(pgDir, 0755); err != nil {
+				return fmt.Errorf("creating page dir %s: %w", pgDir, err)
+			}
+			outPath := filepath.Join(pgDir, "index.html")
+			f, err := os.Create(outPath)
+			if err != nil {
+				return fmt.Errorf("creating %s: %w", outPath, err)
+			}
+			err = pageT.ExecuteTemplate(f, "base", PageData{Site: site, Post: pg, Year: year})
+			f.Close()
+			if err != nil {
+				return fmt.Errorf("rendering page %s: %w", pg.Slug, err)
+			}
+			fmt.Printf("  Built: %s/\n", pg.Slug)
+		}
+	}
+
 	// Generate sitemap.xml.
-	if err := renderSitemap(outputDir, site, allItems, tagNames); err != nil {
+	if err := renderSitemap(outputDir, site, site.ContentTypes, allItems, tagNames, pageItems); err != nil {
 		return fmt.Errorf("generating sitemap: %w", err)
 	}
 	fmt.Println("  Built: sitemap.xml")
@@ -221,6 +279,9 @@ func rewriteStaticPaths(content string) string {
 func loadContent(dir, contentType string) ([]*PostView, error) {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
+		if os.IsNotExist(err) {
+			return nil, nil
+		}
 		return nil, fmt.Errorf("reading %s dir: %w", contentType, err)
 	}
 
@@ -292,15 +353,21 @@ type urlSet struct {
 	URLs      []sitemapURL `xml:"url"`
 }
 
-func renderSitemap(outputDir string, site *config.Site, posts []*PostView, tags []string) error {
+func renderSitemap(outputDir string, site *config.Site, contentTypes []string, posts []*PostView, tags []string, pages []*PostView) error {
 	base := strings.TrimRight(site.BaseURL, "/")
 	var urls []sitemapURL
 	urls = append(urls, sitemapURL{Loc: base + "/"})
+	for _, ct := range contentTypes {
+		urls = append(urls, sitemapURL{Loc: base + "/" + ct + "/"})
+	}
 	for _, post := range posts {
 		urls = append(urls, sitemapURL{Loc: base + "/" + post.Type + "/" + post.Slug + "/"})
 	}
 	for _, tag := range tags {
 		urls = append(urls, sitemapURL{Loc: base + "/tags/" + tag + "/"})
+	}
+	for _, pg := range pages {
+		urls = append(urls, sitemapURL{Loc: base + "/" + pg.Slug + "/"})
 	}
 	data, err := xml.MarshalIndent(urlSet{
 		Namespace: "http://www.sitemaps.org/schemas/sitemap/0.9",
