@@ -3,7 +3,7 @@
   "description": "software developer",
   "baseURL": "https://a-murchison.github.io/blog",
   "author": "adam murchison",
-  "tagline": "software developer · nz · build, break, learn",
+  "tagline": "software developer · nz · making complicated things easy",
   "github": "https://github.com/A-Murchison",
   "contentTypes": ["posts", "projects"]
 }
