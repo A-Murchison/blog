@@ -1,7 +1,9 @@
 {
-  "title": "goblog",
-  "description": "A simple blog built with Go and Markdown",
-  "baseURL": "https://a-murchison.github.io/goblog",
-  "author": "A-Murchison",
-  "contentTypes": ["posts"]
+  "title": "adam murchison",
+  "description": "software developer",
+  "baseURL": "https://a-murchison.github.io/blog",
+  "author": "adam murchison",
+  "tagline": "software developer · nz · making complicated things easy",
+  "github": "https://github.com/A-Murchison",
+  "contentTypes": ["posts", "projects"]
 }
