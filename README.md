@@ -1,7 +1,7 @@
 # goblog
 Create a personal profile for yourself written in go
 
-
+```
 Your Repo (goblog)
 │
 ├── posts/                  ← You write .md files here
@@ -19,3 +19,4 @@ Your Repo (goblog)
     │   └── index.html
     └── my-go-journey/
         └── index.html
+```
