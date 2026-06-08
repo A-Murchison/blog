@@ -3,7 +3,7 @@ title: about
 description: hey, I'm Adam.
 ---
 
-I'm a software developer from nz with 9 years commerical experience. Trying to make complicated things easy.
+I'm a software developer from nz with 9 years commercial experience. Trying to make complicated things easy.
 
 ## stack
 
