@@ -1,4 +1,4 @@
-# blog 
+# blog
 
 [here](https://a-murchison.github.io/blog/)
 
