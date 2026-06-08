@@ -22,6 +22,8 @@ type PostView struct {
 	Tags        []string
 	Slug        string
 	Type        string
+	Image       string
+	Link        string
 	Content     template.HTML
 }
 
@@ -30,6 +32,7 @@ type PageData struct {
 	Site        *config.Site
 	Post        *PostView   // populated for post pages
 	Posts       []*PostView // populated for the index and tag pages
+	Projects    []*PostView // populated for the homepage
 	Tag         string      // populated for tag pages
 	ContentType string      // populated for content-type listing pages
 	Year        int
@@ -146,11 +149,16 @@ func Build(rootDir, outputDir, baseURLOverride string) error {
 		}
 	}
 
-	// Homepage shows the 5 most recent posts.
+	// Homepage shows the 5 most recent posts and 4 most recent projects.
 	homepageItems := contentItems["posts"]
 	const maxHomepagePosts = 5
 	if len(homepageItems) > maxHomepagePosts {
 		homepageItems = homepageItems[:maxHomepagePosts]
+	}
+	homepageProjects := contentItems["projects"]
+	const maxHomepageProjects = 4
+	if len(homepageProjects) > maxHomepageProjects {
+		homepageProjects = homepageProjects[:maxHomepageProjects]
 	}
 
 	// Render index page.
@@ -164,7 +172,7 @@ func Build(rootDir, outputDir, baseURLOverride string) error {
 		if err != nil {
 			return fmt.Errorf("creating index.html: %w", err)
 		}
-		err = tmpl.ExecuteTemplate(f, "base", PageData{Site: site, Posts: homepageItems, Year: year})
+		err = tmpl.ExecuteTemplate(f, "base", PageData{Site: site, Posts: homepageItems, Projects: homepageProjects, Year: year})
 		f.Close()
 		if err != nil {
 			return fmt.Errorf("rendering index: %w", err)
@@ -313,6 +321,8 @@ func loadContent(dir, contentType string) ([]*PostView, error) {
 			Tags:        post.Tags,
 			Slug:        slug,
 			Type:        contentType,
+			Image:       post.Image,
+			Link:        post.Link,
 			Content:     template.HTML(rewriteStaticPaths(post.Content)), // safe: HTML passthrough disabled in renderer
 		})
 	}

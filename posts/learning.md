@@ -3,6 +3,7 @@ title: learning
 date: 2026-06-05
 description: learning new skills as an experienced developer
 tags: [go, blog]
+image: static/gopher-dance.gif
 ---
 
 # why

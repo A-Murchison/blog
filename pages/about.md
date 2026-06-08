@@ -1,18 +1,18 @@
 ---
 title: about
-description: software developer based in nz.
+description: hey, I'm Adam.
 ---
 
-## hi, I'm Adam
+I'm a software developer from nz with 9 years commerical experience. Trying to make complicated things easy.
 
-I'm a software developer with 9 years commerical experience. Trying to make complicated things easy.
+## stack
 
-## skills
+### at work
 
-- **Languages** Go, C#, .NET, Next.js, JavaScript
-- **Tools** Git, Docker, Azure
+Programming: C#/.NET, Next.js, Javascript, HTML, CSS, SQL.
+Infra: Docker, Azure, GitHub actions
 
-## contact
+## find me
 
-- GitHub: [A-Murchison](https://github.com/A-Murchison)
-- LinkedIn: [Adam Murchison](https://nz.linkedin.com/in/adam-murchison-10331815a)
+- [github.com/A-Murchison](https://github.com/A-Murchison)
+- [linkedin.com/in/adam-murchison](https://nz.linkedin.com/in/adam-murchison-10331815a)
