@@ -3,6 +3,7 @@
 
 {{define "content"}}
 <div class="page-content">
+  <p class="page-prompt"><span class="cmd">$</span> cat {{.Post.Slug}}.md</p>
   <h1>{{.Post.Title}}</h1>
   {{if .Post.Description}}<p class="page-desc">{{.Post.Description}}</p>{{end}}
   {{.Post.Content}}

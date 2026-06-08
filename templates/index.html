@@ -6,24 +6,51 @@
   <h1 class="hero-name">{{.Site.Title}}</h1>
   {{if .Site.Tagline}}<p class="hero-tagline"><span class="comment">// </span>{{.Site.Tagline}}</p>{{end}}
   <div class="hero-links">
-    {{if .Site.GitHub}}<a href="{{.Site.GitHub}}" class="hero-link" target="_blank" rel="noopener noreferrer">github</a>{{end}}
+    {{if .Site.GitHub}}<a href="{{.Site.GitHub}}" class="hero-link hero-link--icon" target="_blank" rel="noopener noreferrer"><img src="static/github.svg" width="15" height="15" alt="" aria-hidden="true"> github</a>{{end}}
+    {{if .Site.LinkedIn}}<a href="{{.Site.LinkedIn}}" class="hero-link hero-link--icon" target="_blank" rel="noopener noreferrer"><img src="static/linkedin.svg" width="15" height="15" alt="" aria-hidden="true"> linkedin</a>{{end}}
     <a href="about/" class="hero-link">about</a>
-    <a href="projects/" class="hero-link">projects</a>
   </div>
 </div>
 {{if .Posts}}
 <section>
-  <h2 class="section-heading">recent posts</h2>
-  <ul class="post-list">
+  <h2 class="section-heading">posts</h2>
+  <div class="card-grid">
     {{range .Posts}}
-    <li>
-      <h2><a href="posts/{{.Slug}}/">{{.Title}}</a></h2>
-      {{if not .Date.IsZero}}<time datetime="{{.Date.Format "2006-01-02"}}">{{.Date.Format "January 2, 2006"}}</time>{{end}}
-      {{if .Description}}<p class="desc">{{.Description}}</p>{{end}}
-    </li>
+    <a href="posts/{{.Slug}}/" class="card">
+      <div class="card-image">
+        {{if .Image}}<img src="{{.Image}}" alt="{{.Title}}">{{else}}<div class="card-image-bg card-image-bg--post"><span class="card-placeholder-icon">&lt;/&gt;</span></div>{{end}}
+      </div>
+      <div class="card-body">
+        {{if not .Date.IsZero}}<time datetime="{{.Date.Format "2006-01-02"}}">{{.Date.Format "Jan 2, 2006"}}</time>{{end}}
+        <h3 class="card-title">{{.Title}}</h3>
+        {{if .Description}}<p class="card-desc">{{.Description}}</p>{{end}}
+        {{if .Tags}}<div class="tags">{{range .Tags}}<span class="tag">{{.}}</span>{{end}}</div>{{end}}
+      </div>
+    </a>
     {{end}}
-  </ul>
+  </div>
   <a href="posts/" class="view-all">cd posts/ →</a>
+</section>
+{{end}}
+{{if .Projects}}
+<section>
+  <h2 class="section-heading">projects</h2>
+  <div class="card-grid">
+    {{range .Projects}}
+    <a href="projects/{{.Slug}}/" class="card">
+      <div class="card-image">
+        {{if .Image}}<img src="{{.Image}}" alt="{{.Title}}">{{else}}<div class="card-image-bg"><span
+            class="card-placeholder-icon">&lt;/&gt;</span></div>{{end}}
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">{{.Title}}</h3>
+        {{if .Description}}<p class="card-desc">{{.Description}}</p>{{end}}
+        {{if .Tags}}<div class="tags">{{range .Tags}}<span class="tag">{{.}}</span>{{end}}</div>{{end}}
+      </div>
+    </a>
+    {{end}}
+  </div>
+  <a href="projects/" class="view-all">cd projects/ →</a>
 </section>
 {{end}}
 {{end}}
