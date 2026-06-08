@@ -23,7 +23,6 @@ type PostView struct {
 	Slug        string
 	Type        string
 	Image       string
-	Link        string
 	Content     template.HTML
 }
 
@@ -151,7 +150,7 @@ func Build(rootDir, outputDir, baseURLOverride string) error {
 
 	// Homepage shows the 5 most recent posts and 4 most recent projects.
 	homepageItems := contentItems["posts"]
-	const maxHomepagePosts = 5
+	const maxHomepagePosts = 4
 	if len(homepageItems) > maxHomepagePosts {
 		homepageItems = homepageItems[:maxHomepagePosts]
 	}
@@ -322,7 +321,6 @@ func loadContent(dir, contentType string) ([]*PostView, error) {
 			Slug:        slug,
 			Type:        contentType,
 			Image:       post.Image,
-			Link:        post.Link,
 			Content:     template.HTML(rewriteStaticPaths(post.Content)), // safe: HTML passthrough disabled in renderer
 		})
 	}
