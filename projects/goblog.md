@@ -3,6 +3,7 @@ title: goblog
 date: 2026-06-06
 description: A minimal static site generator written in Go.
 tags: [go, open-source]
+image: static/gopher-dance.gif
 ---
 
 This blog was created with goblog.
@@ -20,3 +21,5 @@ A minimal static site generator that turns Markdown files into a static website 
 ## Source
 
 [github.com/A-Murchison/goblog](https://github.com/A-Murchison/goblog)
+
+[Gopher .gif by @egonelbre](https://github.com/egonelbre/gophers)
