@@ -5,7 +5,7 @@ description: learning new skills as an experienced developer
 tags: [go, blog]
 ---
 
-# Why
+# Motivation to get into OSS
 
 _I want to challenge myself_
 
