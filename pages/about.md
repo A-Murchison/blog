@@ -9,7 +9,7 @@ I'm a software developer from nz with 9 years commercial experience. Trying to m
 
 Programming: C#/.NET, Next.js, Javascript, HTML, CSS, SQL.
 
-Infra: Docker, Azure, GitHub Actions
+Framework & Tools: Azure, Github, Azure DevOps, Docker
 
 ## find me
 
