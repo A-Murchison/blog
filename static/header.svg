@@ -1,0 +1,158 @@
+<svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 800 500"
+              width="100%"
+              height="100%"
+            >
+              <defs>
+                <!-- Soft background gradient for a premium feel -->
+                <linearGradient
+                  id="bg-grad"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop offset="0%" stop-color="#FFF" />
+                  <stop offset="100%" stop-color="#FFF" />
+                </linearGradient>
+
+                <!-- Elegant gold/yellow gradient for the rings and accents -->
+                <linearGradient
+                  id="gold-grad"
+                  x1="0%"
+                  y1="100%"
+                  x2="100%"
+                  y2="0%"
+                >
+                  <stop offset="0%" stop-color="#E6A100" />
+                  <stop offset="50%" stop-color="#FFC83B" />
+                  <stop offset="100%" stop-color="#FFE885" />
+                </linearGradient>
+              </defs>
+
+              <!-- Background -->
+              <rect width="100%" height="100%" fill="url(#bg-grad)" rx="16" />
+
+              <!-- Decorative Sparkles / Celebration Elements -->
+              <g fill="#FFD24D">
+                <!-- Top Left Sparkle -->
+                <path
+                  d="M150,90 Q150,110 170,110 Q150,110 150,130 Q150,110 130,110 Q150,110 150,90 Z"
+                  opacity="0.8"
+                />
+                <!-- Top Right Sparkle -->
+                <path
+                  d="M650,120 Q650,135 665,135 Q650,135 650,150 Q650,135 635,135 Q650,135 650,120 Z"
+                  opacity="0.6"
+                />
+                <!-- Small dots -->
+                <circle cx="200" cy="160" r="4" opacity="0.5" />
+                <circle cx="580" cy="100" r="5" opacity="0.5" />
+                <circle cx="620" cy="280" r="3" opacity="0.4" />
+                <circle cx="180" cy="300" r="4" opacity="0.4" />
+              </g>
+
+              <!-- Main Illustration: Interlocking Rings -->
+              <g transform="translate(0, -20)">
+                <!-- Left Ring (Back) -->
+                <ellipse
+                  cx="365"
+                  cy="220"
+                  rx="55"
+                  ry="40"
+                  fill="none"
+                  stroke="url(#gold-grad)"
+                  stroke-width="9"
+                  transform="rotate(-15 365 220)"
+                />
+
+                <!-- Right Ring (Front/Interlocking) -->
+                <ellipse
+                  cx="435"
+                  cy="220"
+                  rx="55"
+                  ry="40"
+                  fill="none"
+                  stroke="url(#gold-grad)"
+                  stroke-width="9"
+                  transform="rotate(15 435 220)"
+                />
+
+                <!-- Clever overlap to make them look truly interlocked -->
+                <path
+                  d="M 390 190 A 55 40 0 0 1 420 225"
+                  fill="none"
+                  stroke="#FFC83B"
+                  stroke-width="9"
+                  transform="rotate(-15 365 220)"
+                />
+              </g>
+
+              <!-- Floating Hearts / Joy Elements -->
+              <path
+                d="M400,110 C400,105 390,95 380,95 C365,95 365,115 380,125 L400,145 L420,125 C435,115 435,95 420,95 C410,95 400,105 400,110 Z"
+                fill="#FFC229"
+                opacity="0.9"
+                transform="scale(0.7) translate(230, 20)"
+              />
+
+              <path
+                d="M400,110 C400,105 390,95 380,95 C365,95 365,115 380,125 L400,145 L420,125 C435,115 435,95 420,95 C410,95 400,105 400,110 Z"
+                fill="#FFE082"
+                opacity="0.7"
+                transform="scale(0.5) translate(460, 110) rotate(15)"
+              />
+
+              <!-- Typography / Text Elements -->
+              <g
+                text-anchor="middle"
+                font-family="Arial, sans-serif;"
+                color="#333"
+              >
+                <!-- Script-like elegant subtext -->
+                <text
+                  x="400"
+                  y="350"
+                  font-size="22"
+                  fill="#724733"
+                  font-style="italic"
+                  letter-spacing="2"
+                >
+                  Celebrate with us
+                </text>
+
+                <!-- Main Announcement -->
+                <text
+                  x="400"
+                  y="400"
+                  font-size="36"
+                  font-weight="bold"
+                  fill="#f26e2f"
+                  letter-spacing="4"
+                >
+                  ROSIE &amp; ADAM
+                </text>
+                <text
+                  x="400"
+                  y="450"
+                  font-size="36"
+                  font-weight="bold"
+                  fill="#a5968e"
+                  letter-spacing="4"
+                >
+                  ARE GETTING MARRIED
+                </text>
+                <!-- Decorative divider line -->
+                <line
+                  x1="350"
+                  y1="480"
+                  x2="450"
+                  y2="480"
+                  stroke="#E6A100"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  opacity="0.6"
+                />
+              </g>
+            </svg>
