@@ -32,7 +32,7 @@ I thought:
 
 >f*#% it. I'll work it out.
 
-I go ahead and wipe my old, disgusting, crusty Windows operating system, leave my wife and install Fedora Linux.
+I go ahead and wipe my old, disgusting, crusty Windows operating system, abandon my family and install Fedora Linux.
 
 A new life with new opportunities.
 
