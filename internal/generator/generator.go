@@ -1,6 +1,7 @@
 package generator
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"html/template"
@@ -28,13 +29,94 @@ type PostView struct {
 
 // PageData is passed to every template execution.
 type PageData struct {
-	Site        *config.Site
-	Post        *PostView   // populated for post pages
-	Posts       []*PostView // populated for the index and tag pages
-	Projects    []*PostView // populated for the homepage
-	Tag         string      // populated for tag pages
-	ContentType string      // populated for content-type listing pages
-	Year        int
+	Site            *config.Site
+	Post            *PostView   // populated for post pages
+	Posts           []*PostView // populated for the index and tag pages
+	Projects        []*PostView // populated for the homepage
+	Tag             string      // populated for tag pages
+	ContentType     string      // populated for content-type listing pages
+	Year            int
+	PageTitle       string
+	MetaDescription string
+	CanonicalURL    string
+	SocialImageURL  string
+	JSONLD          template.JS
+}
+
+func absoluteURL(site *config.Site, path string) string {
+	base := strings.TrimRight(site.BaseURL, "/")
+	path = strings.TrimLeft(path, "/")
+	if path == "" {
+		return base + "/"
+	}
+	return base + "/" + path
+}
+
+func pageData(site *config.Site, year int, title, description, path string) PageData {
+	return PageData{
+		Site:            site,
+		Year:            year,
+		PageTitle:       title,
+		MetaDescription: description,
+		CanonicalURL:    absoluteURL(site, path),
+		JSONLD: jsonLD(map[string]any{
+			"@context":    "https://schema.org",
+			"@type":       "WebPage",
+			"name":        title,
+			"description": description,
+			"url":         absoluteURL(site, path),
+			"isPartOf": map[string]any{
+				"@type": "WebSite",
+				"name":  site.Title,
+				"url":   absoluteURL(site, ""),
+			},
+		}),
+	}
+}
+
+func contentPageData(site *config.Site, item *PostView, year int) PageData {
+	title := item.Title + " - " + site.Title
+	path := item.Type + "/" + item.Slug + "/"
+	description := item.Description
+	if description == "" {
+		description = site.Description
+	}
+	ld := map[string]any{
+		"@context":    "https://schema.org",
+		"@type":       "BlogPosting",
+		"headline":    item.Title,
+		"description": description,
+		"url":         absoluteURL(site, path),
+		"author": map[string]any{
+			"@type": "Person",
+			"name":  site.Author,
+		},
+		"publisher": map[string]any{
+			"@type": "Person",
+			"name":  site.Author,
+		},
+		"mainEntityOfPage": absoluteURL(site, path),
+	}
+	if !item.Date.IsZero() {
+		ld["datePublished"] = item.Date.Format(time.RFC3339)
+		ld["dateModified"] = item.Date.Format(time.RFC3339)
+	}
+	if item.Image != "" {
+		ld["image"] = absoluteURL(site, item.Image)
+	}
+	data := PageData{Site: site, Post: item, Year: year, PageTitle: title, MetaDescription: description, CanonicalURL: absoluteURL(site, path), JSONLD: jsonLD(ld)}
+	if item.Image != "" {
+		data.SocialImageURL = absoluteURL(site, item.Image)
+	}
+	return data
+}
+
+func jsonLD(v any) template.JS {
+	data, err := json.Marshal(v)
+	if err != nil {
+		return ""
+	}
+	return template.JS(data)
 }
 
 // Build reads posts from rootDir/posts/, renders HTML, and writes to outputDir.
@@ -120,7 +202,7 @@ func Build(rootDir, outputDir, baseURLOverride string) error {
 			if err != nil {
 				return fmt.Errorf("creating %s: %w", outPath, err)
 			}
-			err = tmpl.ExecuteTemplate(f, "base", PageData{Site: site, Post: item, Year: year})
+			err = tmpl.ExecuteTemplate(f, "base", contentPageData(site, item, year))
 			f.Close()
 			if err != nil {
 				return fmt.Errorf("rendering %s/%s: %w", contentType, item.Slug, err)
@@ -139,7 +221,10 @@ func Build(rootDir, outputDir, baseURLOverride string) error {
 			if err != nil {
 				return fmt.Errorf("creating %s/index.html: %w", contentType, err)
 			}
-			err = listT.ExecuteTemplate(f, "base", PageData{Site: site, Posts: items, ContentType: contentType, Year: year})
+			data := pageData(site, year, contentType+" - "+site.Title, site.Description, contentType+"/")
+			data.Posts = items
+			data.ContentType = contentType
+			err = listT.ExecuteTemplate(f, "base", data)
 			f.Close()
 			if err != nil {
 				return fmt.Errorf("rendering %s index: %w", contentType, err)
@@ -171,7 +256,10 @@ func Build(rootDir, outputDir, baseURLOverride string) error {
 		if err != nil {
 			return fmt.Errorf("creating index.html: %w", err)
 		}
-		err = tmpl.ExecuteTemplate(f, "base", PageData{Site: site, Posts: homepageItems, Projects: homepageProjects, Year: year})
+		data := pageData(site, year, site.Title, site.Description, "")
+		data.Posts = homepageItems
+		data.Projects = homepageProjects
+		err = tmpl.ExecuteTemplate(f, "base", data)
 		f.Close()
 		if err != nil {
 			return fmt.Errorf("rendering index: %w", err)
@@ -219,7 +307,11 @@ func Build(rootDir, outputDir, baseURLOverride string) error {
 		if err != nil {
 			return fmt.Errorf("creating %s: %w", outPath, err)
 		}
-		err = tmpl.ExecuteTemplate(f, "base", PageData{Site: site, Posts: tagMap[tag], Tag: tag, Year: year})
+		description := fmt.Sprintf("Articles and projects tagged %s by %s.", tag, site.Author)
+		data := pageData(site, year, "#"+tag+" - "+site.Title, description, "tags/"+tag+"/")
+		data.Posts = tagMap[tag]
+		data.Tag = tag
+		err = tmpl.ExecuteTemplate(f, "base", data)
 		f.Close()
 		if err != nil {
 			return fmt.Errorf("rendering tag %s: %w", tag, err)
@@ -259,7 +351,9 @@ func Build(rootDir, outputDir, baseURLOverride string) error {
 			if err != nil {
 				return fmt.Errorf("creating %s: %w", outPath, err)
 			}
-			err = pageT.ExecuteTemplate(f, "base", PageData{Site: site, Post: pg, Year: year})
+			data := pageData(site, year, pg.Title+" - "+site.Title, pg.Description, pg.Slug+"/")
+			data.Post = pg
+			err = pageT.ExecuteTemplate(f, "base", data)
 			f.Close()
 			if err != nil {
 				return fmt.Errorf("rendering page %s: %w", pg.Slug, err)
@@ -268,11 +362,15 @@ func Build(rootDir, outputDir, baseURLOverride string) error {
 		}
 	}
 
-	// Generate sitemap.xml.
+	// Generate sitemap.xml and robots.txt for search engines.
 	if err := renderSitemap(outputDir, site, site.ContentTypes, allItems, tagNames, pageItems); err != nil {
 		return fmt.Errorf("generating sitemap: %w", err)
 	}
 	fmt.Println("  Built: sitemap.xml")
+	if err := renderRobots(outputDir, site); err != nil {
+		return fmt.Errorf("generating robots.txt: %w", err)
+	}
+	fmt.Println("  Built: robots.txt")
 
 	return nil
 }
@@ -352,7 +450,8 @@ func copyDir(src, dst string) error {
 }
 
 type sitemapURL struct {
-	Loc string `xml:"loc"`
+	Loc     string `xml:"loc"`
+	LastMod string `xml:"lastmod,omitempty"`
 }
 
 type urlSet struct {
@@ -369,7 +468,11 @@ func renderSitemap(outputDir string, site *config.Site, contentTypes []string, p
 		urls = append(urls, sitemapURL{Loc: base + "/" + ct + "/"})
 	}
 	for _, post := range posts {
-		urls = append(urls, sitemapURL{Loc: base + "/" + post.Type + "/" + post.Slug + "/"})
+		entry := sitemapURL{Loc: base + "/" + post.Type + "/" + post.Slug + "/"}
+		if !post.Date.IsZero() {
+			entry.LastMod = post.Date.Format("2006-01-02")
+		}
+		urls = append(urls, entry)
 	}
 	for _, tag := range tags {
 		urls = append(urls, sitemapURL{Loc: base + "/tags/" + tag + "/"})
@@ -386,4 +489,9 @@ func renderSitemap(outputDir string, site *config.Site, contentTypes []string, p
 	}
 	content := []byte(xml.Header + string(data))
 	return os.WriteFile(filepath.Join(outputDir, "sitemap.xml"), content, 0644)
+}
+
+func renderRobots(outputDir string, site *config.Site) error {
+	content := fmt.Sprintf("User-agent: *\nAllow: /\n\nSitemap: %ssitemap.xml\n", site.BaseURL)
+	return os.WriteFile(filepath.Join(outputDir, "robots.txt"), []byte(content), 0644)
 }

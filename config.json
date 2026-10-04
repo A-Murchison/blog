@@ -1,8 +1,8 @@
 {
-  "title": "adam murchison",
-  "description": "software developer",
+  "title": "Adam Murchison",
+  "description": "Adam Murchison is a New Zealand software developer writing about Go, Linux, open source, developer tooling, and software projects.",
   "baseURL": "https://a-murchison.github.io/blog",
-  "author": "adam murchison",
+  "author": "Adam Murchison",
   "tagline": "software developer · nz · making complicated things easy",
   "github": "https://github.com/A-Murchison",
   "linkedin": "https://nz.linkedin.com/in/adam-murchison-10331815a",

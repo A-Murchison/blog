@@ -4,8 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <base href="{{.Site.BaseURL}}">
-  <title>{{block "title" .}}{{.Site.Title}}{{end}}</title>
-  <meta name="description" content="{{block "meta-description" .}}{{.Site.Description}}{{end}}">
+  <title>{{if .PageTitle}}{{.PageTitle}}{{else}}{{block "title" .}}{{.Site.Title}}{{end}}{{end}}</title>
+  <meta name="description" content="{{if .MetaDescription}}{{.MetaDescription}}{{else}}{{block "meta-description" .}}{{.Site.Description}}{{end}}{{end}}">
+  <meta name="robots" content="index, follow">
+  {{if .CanonicalURL}}<link rel="canonical" href="{{.CanonicalURL}}">{{end}}
+  <meta property="og:site_name" content="{{.Site.Title}}">
+  <meta property="og:title" content="{{if .PageTitle}}{{.PageTitle}}{{else}}{{.Site.Title}}{{end}}">
+  <meta property="og:description" content="{{if .MetaDescription}}{{.MetaDescription}}{{else}}{{.Site.Description}}{{end}}">
+  <meta property="og:type" content="{{if .Post}}article{{else}}website{{end}}">
+  {{if .CanonicalURL}}<meta property="og:url" content="{{.CanonicalURL}}">{{end}}
+  {{if .SocialImageURL}}<meta property="og:image" content="{{.SocialImageURL}}">{{end}}
+  <meta name="twitter:card" content="{{if .SocialImageURL}}summary_large_image{{else}}summary{{end}}">
+  <meta name="twitter:title" content="{{if .PageTitle}}{{.PageTitle}}{{else}}{{.Site.Title}}{{end}}">
+  <meta name="twitter:description" content="{{if .MetaDescription}}{{.MetaDescription}}{{else}}{{.Site.Description}}{{end}}">
+  {{if .SocialImageURL}}<meta name="twitter:image" content="{{.SocialImageURL}}">{{end}}
+  {{if .JSONLD}}<script type="application/ld+json">{{.JSONLD}}</script>{{end}}
+  <link rel="sitemap" type="application/xml" href="sitemap.xml">
   <link rel="icon" type="image/svg+xml" href="static/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
