@@ -76,6 +76,8 @@ I tried it and I love it.
 
 Since upgrading my OS, I have tried a new IDE (Zed) and I love it. 
 
+I am using the Pi harness. I love it. 
+
 Every single change is a new learning and is keeping me fresh. 
 
 This is super important in Software Engineering. 
