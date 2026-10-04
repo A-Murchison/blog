@@ -20,9 +20,10 @@ In technology, being safe and comfortable is a recipe for becoming outdated.
 
 Instead of dipping my toes, I took the plunge and wiped everything.
 
-A man with freedom. 
+Freedom. 
 
-// TODO: Insert image of eagle lol
+![Ascention](static/spongebobascention.jpg)
+
 
 ## The plunge
 
