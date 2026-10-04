@@ -10,7 +10,7 @@ image: static/spongeboob.jpg
 
 Since creating this blog a few months ago, I've challenged myself to learn new skills and stay up-to-date. 
 
-It **wasn't** an every day thing, _until..._ 
+It wasn't an every day thing, _until..._ 
 
 I deleted my operating system and started fresh on Fedora Linux from Windows.
 
