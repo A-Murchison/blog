@@ -3,10 +3,10 @@ title: open source
 date: 2026-06-05
 description: learning new skills as an experienced developer
 tags: [go, blog]
-image: static/gopher-power.svg
+image: static/spongboboss.jpg
 ---
 
-# Motivation to get into OSS
+# motivation to get into OSS
 
 _I want to challenge myself_
 
@@ -24,18 +24,18 @@ Above is a quote from an interesting article and some theories on the monetary i
 
 I have utilised open source code my whole career and has made me and every other developer better. I've done a small amount contributing to PnPCore but it's time to get involved!
 
-# Steps to Challenging Myself
+## Steps to Challenging Myself
 
-## Start Small
+### Start Small
 
 I have landed with learning GoLang programming. I need a portfolio so why not make a markdown to HTML converter in Go?
 
 My experience with Go has been great so far and I can't wait to see where this takes me.
 
-## What’s Next
+### What’s Next
 
 I'd love to contribute to projects that I use on my journey and have used in the past. This will make myself a better developer and I will have the satisfaction of giving back to such an amazing community.
 
-# Closing Thoughts
+## Closing Thoughts
 
 This feels like a new chapter and I'd love to be known in the open source community. Please reach out and connect with me.
