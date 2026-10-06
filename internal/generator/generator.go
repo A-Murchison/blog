@@ -53,25 +53,42 @@ func absoluteURL(site *config.Site, path string) string {
 }
 
 func pageData(site *config.Site, year int, title, description, path string) PageData {
-	return PageData{
+	siteURL := absoluteURL(site, "")
+	pageURL := absoluteURL(site, path)
+	websiteLD := map[string]any{
+		"@type": "WebSite",
+		"@id":   siteURL + "#website",
+		"name":  site.Title,
+		"url":   siteURL,
+	}
+	pageLD := map[string]any{
+		"@type":       "WebPage",
+		"@id":         pageURL + "#webpage",
+		"name":        title,
+		"description": description,
+		"url":         pageURL,
+		"isPartOf": map[string]any{
+			"@id": siteURL + "#website",
+		},
+	}
+	data := PageData{
 		Site:            site,
 		Year:            year,
 		PageTitle:       title,
 		MetaDescription: description,
-		CanonicalURL:    absoluteURL(site, path),
-		JSONLD: jsonLD(map[string]any{
-			"@context":    "https://schema.org",
-			"@type":       "WebPage",
-			"name":        title,
-			"description": description,
-			"url":         absoluteURL(site, path),
-			"isPartOf": map[string]any{
-				"@type": "WebSite",
-				"name":  site.Title,
-				"url":   absoluteURL(site, ""),
-			},
-		}),
+		CanonicalURL:    pageURL,
 	}
+	if site.Image != "" {
+		imageURL := absoluteURL(site, site.Image)
+		data.SocialImageURL = imageURL
+		pageLD["image"] = imageURL
+		websiteLD["image"] = imageURL
+	}
+	data.JSONLD = jsonLD(map[string]any{
+		"@context": "https://schema.org",
+		"@graph":   []any{websiteLD, pageLD},
+	})
+	return data
 }
 
 func contentPageData(site *config.Site, item *PostView, year int) PageData {
@@ -101,12 +118,16 @@ func contentPageData(site *config.Site, item *PostView, year int) PageData {
 		ld["datePublished"] = item.Date.Format(time.RFC3339)
 		ld["dateModified"] = item.Date.Format(time.RFC3339)
 	}
-	if item.Image != "" {
-		ld["image"] = absoluteURL(site, item.Image)
+	image := item.Image
+	if image == "" {
+		image = site.Image
+	}
+	if image != "" {
+		ld["image"] = absoluteURL(site, image)
 	}
 	data := PageData{Site: site, Post: item, Year: year, PageTitle: title, MetaDescription: description, CanonicalURL: absoluteURL(site, path), JSONLD: jsonLD(ld)}
-	if item.Image != "" {
-		data.SocialImageURL = absoluteURL(site, item.Image)
+	if image != "" {
+		data.SocialImageURL = absoluteURL(site, image)
 	}
 	return data
 }
