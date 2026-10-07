@@ -3,7 +3,7 @@ title: discord-tunes
 date: 2026-06-14
 description: A Discord music bot that streams YouTube and Spotify into voice channels.
 tags: [go, open-source, discord]
-image: static/discord-tunes.svg
+image: static/discord-tunes.png
 ---
 
 A Discord bot that plays music in voice channels. Streams from YouTube URLs or Spotify, queues tracks, and skips when you're done with a song.
