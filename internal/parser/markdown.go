@@ -92,7 +92,8 @@ func mdToHTML(src []byte) []byte {
 	p := parser.NewWithExtensions(extensions)
 	doc := p.Parse(src)
 
-	flags := html.CommonFlags | html.HrefTargetBlank | html.SkipHTML
+	// Posts are authored in this repository, so permit trusted HTML embeds such as diagrams.
+	flags := html.CommonFlags | html.HrefTargetBlank
 	renderer := html.NewRenderer(html.RendererOptions{Flags: flags})
 	return markdown.Render(doc, renderer)
 }

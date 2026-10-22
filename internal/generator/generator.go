@@ -440,7 +440,7 @@ func loadContent(dir, contentType string) ([]*PostView, error) {
 			Slug:        slug,
 			Type:        contentType,
 			Image:       post.Image,
-			Content:     template.HTML(rewriteStaticPaths(post.Content)), // safe: HTML passthrough disabled in renderer
+			Content:     template.HTML(rewriteStaticPaths(post.Content)), // Markdown is trusted repository-authored content.
 		})
 	}
 	return items, nil
