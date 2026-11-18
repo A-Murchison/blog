@@ -72,40 +72,30 @@
     a:hover { color: var(--accent-bright); }
     a:focus-visible { outline: 2px solid var(--accent-bright); outline-offset: 3px; border-radius: 3px; }
 
-    /* ── Window nav ── */
+    /* ── Primary navigation ── */
     .site-nav-window {
-      max-width: var(--max-w);
-      margin: -0.75rem auto 3rem;
-    }
-    .site-title { font-family: var(--mono); font-weight: 700; font-size: 0.9375rem; color: var(--accent); flex-shrink: 0; text-decoration: none; text-transform: lowercase; }
-    .site-title::before { content: '~/'; color: var(--muted); font-weight: 400; }
-    .site-title:hover { color: var(--accent-bright); }
-    .site-nav-body { padding: 1rem; }
-    .nav-links {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 0.75rem;
-    }
-    .nav-links a {
       display: flex;
       align-items: center;
-      justify-content: center;
-      min-height: 3.75rem;
-      border: 1px solid transparent;
-      border-radius: 14px;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem 2rem;
+      margin: -0.75rem auto 3rem;
+      padding: 0.75rem 1rem;
+    }
+    .site-title { font-family: var(--mono); font-weight: 700; font-size: 0.9375rem; color: var(--accent); text-decoration: none; text-transform: lowercase; }
+    .site-title::before { content: '~/'; color: var(--muted); font-weight: 400; }
+    .site-title:hover { color: var(--accent-bright); }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 0 1.25rem; }
+    .nav-links a {
+      display: inline-block;
+      padding: 0.4rem 0;
       color: var(--text);
       font-family: var(--mono);
       font-size: 0.875rem;
-      font-weight: 700;
-      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
       text-decoration: none;
     }
-    .nav-links a:hover,
-    .nav-links a[aria-current="page"] {
-      color: var(--accent-bright);
-      background: var(--hover-bg);
-      border-color: var(--border);
-    }
+    .nav-links a:hover { color: var(--accent-bright); text-decoration: underline; }
+    .nav-links a[aria-current="page"] { color: var(--accent-bright); text-decoration: underline; text-underline-offset: 0.3em; }
 
     /* ── Main ── */
     main { max-width: var(--max-w); width: 100%; margin: 3.5rem auto; padding: 0 1.5rem; flex: 1; }
@@ -179,7 +169,6 @@
       border-bottom: 1px solid var(--border);
     }
     .window-titlebar.compact { min-height: 3.1rem; padding: 0.65rem 0.9rem; }
-    .site-nav-window .window-titlebar { display: flex; justify-content: center; }
     .window-controls { display: flex; align-items: center; gap: 0.55rem; }
     .control { width: 0.82rem; height: 0.82rem; border-radius: 50%; box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.3); }
     .control-close { background: #ff5f56; }
@@ -191,8 +180,6 @@
       color: var(--muted);
     }
     .window-file { color: var(--text); font-weight: 700; }
-    .site-title.window-file { color: var(--accent); }
-    .site-title.window-file:hover { color: var(--accent-bright); }
     .window-caret { justify-self: end; }
     .intro-primary {
       padding: clamp(1.5rem, 4vw, 3rem);
@@ -413,10 +400,7 @@
       .card-grid { grid-template-columns: 1fr; }
       main { margin: 2rem auto; }
       .site-nav-window { margin: 0 auto 2rem; }
-      .site-nav-window .window-titlebar { grid-template-columns: auto 1fr; }
-      .site-nav-body { padding: 0.75rem; }
-      .nav-links { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
-      .nav-links a { min-height: 3.25rem; }
+      .nav-links { gap: 0 1rem; }
       .landing { width: min(100%, calc(100vw - 2rem)); margin-top: 0; }
       .intro-window-frame { min-height: auto; margin-bottom: 1rem; }
       .intro-window, .desktop-window { border-radius: 8px; }
@@ -442,16 +426,12 @@
   <main>
     {{if or .Post .ContentType .Tag}}
     <nav class="desktop-window site-nav-window" aria-label="Primary navigation">
-      <div class="window-titlebar compact">
-        <a class="site-title window-file" href="{{.Site.BaseURL}}">{{.Site.Title}}</a>
-      </div>
-      <div class="site-nav-body">
-        <div class="nav-links">
+      <a class="site-title" href="{{.Site.BaseURL}}">{{.Site.Title}}</a>
+      <div class="nav-links">
           <a href="{{.Site.BaseURL}}">home</a>
           <a href="about/"{{if and .Post (eq .Post.Type "page") (eq .Post.Slug "about")}} aria-current="page"{{end}}>about</a>
           <a href="projects/"{{if or (eq .ContentType "projects") (and .Post (eq .Post.Type "projects"))}} aria-current="page"{{end}}>projects</a>
           <a href="posts/"{{if or (eq .ContentType "posts") (and .Post (eq .Post.Type "posts"))}} aria-current="page"{{end}}>posts</a>
-        </div>
       </div>
     </nav>
     {{end}}
